@@ -71,7 +71,8 @@ def create_monthly_variables(dataset, sym):
     df['avg gain/loss ratio'] = df['avg gain']+df['avg loss']
     df['min gain/loss ratio'] = df['min gain']+df['max loss']
     df['max gain/loss ratio'] = df['max gain']+df['min loss']
-        
+    df['num years'] = dataset['year'].nunique()
+    print(dataset['year'].unique())
     # save df
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}_output.csv'
     df.to_csv(save_path)
