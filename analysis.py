@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime
 from math import ceil
+import matplotlib.pyplot as plt
+import numpy as np
 
 # calculate week of month from timestamp date
 def week_of_month(dt):
@@ -76,8 +78,44 @@ def create_monthly_variables(dataset, sym):
     # save df
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}_output.csv'
     df.to_csv(save_path)
+    
+def plot_last_3_year_data(dataset, sym):
+    # get unique month and week values
+    month_and_weeks = dataset['month and week'].unique()
+    # remove '*-5' from month and week
+    month_and_weeks = [x for x in month_and_weeks if '-5' not in x]
+    
+    # plot max loss 
+    alpha = 1
+    # plot data for the last 3 unique years
+    for year in dataset['year'].unique()[-2::-1]:
+        # get data for that year
+        year_data = dataset[dataset['year'] == year]
+        # get data for those in month_and_weeks
+        year_data = year_data[year_data['month and week'].isin(month_and_weeks)]
+        # plot
+        plt.scatter(year_data['month and week'], year_data['max loss'], label=year, alpha=alpha)
+        plt.scatter(year_data['month and week'], year_data['max gain'], label=year, alpha=alpha)
+        # alpha += 0.3
+    # replace x label with month and weeks and rotate
+    plt.xticks(np.arange(len(month_and_weeks)), month_and_weeks)
+    plt.grid(axis='x')
+    # horizontal line on 0
+    plt.axhline(y=0, color='r', linestyle='-')
+    # Only show the first label of every month
+    plt.gca().xaxis.set_major_locator(plt.MultipleLocator(4))
 
-def create_monthly_dataset(sym):
+    plt.legend()
+    # place legend in bottom left
+    # vertical lines on x axis
+    plt.legend(loc='lower left')
+    plt.title('CVE Max Gains and Losses')
+    plt.xlabel('Month and Week')
+    plt.ylabel('Profit %')
+    plt.xticks(rotation=90)
+    plt.show()
+
+def create_monthly_dataset(sym, plot = False):
     dataset_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}.csv'
     # import dataset
     dataset = pd.read_csv(dataset_path)
@@ -91,11 +129,14 @@ def create_monthly_dataset(sym):
     # save dataset
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}_data.csv'
     dataset.to_csv(save_path)
-
     create_monthly_variables(dataset, sym)
-    
+    if plot:
+        plot_last_3_year_data(dataset, sym)
+
+
 if __name__ == '__main__':
     sym = 'CVE'
+    plot = True
     # format data_path using sym
     
-    create_monthly_dataset(sym)
+    create_monthly_dataset(sym, plot=plot)
