@@ -5,7 +5,6 @@ import os
 from datetime import datetime, timedelta
 import time
 import pandas as pd
-import numpy as np
 from alpaca_trade_api.rest import REST, TimeFrame
 
 ALPACA_API_KEY= os.getenv('ALPACA_API_KEY')
