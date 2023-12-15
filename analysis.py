@@ -86,17 +86,15 @@ def plot_last_3_year_data(dataset, sym):
     month_and_weeks = [x for x in month_and_weeks if '-5' not in x]
     
     # plot max loss 
-    alpha = 1
     # plot data for the last 3 unique years
-    for year in dataset['year'].unique()[-2::-1]:
+    for year in dataset['year'].unique()[-3::]:
         # get data for that year
         year_data = dataset[dataset['year'] == year]
         # get data for those in month_and_weeks
         year_data = year_data[year_data['month and week'].isin(month_and_weeks)]
         # plot
-        plt.scatter(year_data['month and week'], year_data['max loss'], label=year, alpha=alpha)
-        plt.scatter(year_data['month and week'], year_data['max gain'], label=year, alpha=alpha)
-        # alpha += 0.3
+        plt.scatter(year_data['month and week'], year_data['max loss'], label=f'{year}-loss')
+        plt.scatter(year_data['month and week'], year_data['max gain'], label=f'{year}-gain')
     # replace x label with month and weeks and rotate
     plt.xticks(np.arange(len(month_and_weeks)), month_and_weeks)
     plt.grid(axis='x')
