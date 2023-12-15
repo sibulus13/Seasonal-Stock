@@ -1,4 +1,6 @@
 .env
+.csv
+.pyc
 
 # ignore any files that includes "CVE"
 *CVE*

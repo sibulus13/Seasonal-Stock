@@ -7,7 +7,7 @@ def main():
 
 
 if __name__ == '__main__':
-    syms = ['CVE']
+    syms = ['CVE', 'ACB']
         
     for sym in syms:
         start_date = '2000-01-01'
