@@ -43,10 +43,12 @@ def fetch_new_data(sym,
     Grabs last recorded date from CSV and fetches new data from that date to today
     Saves all datasets and latest scaled entry with corresponding timestamp
     '''
+    # parsed sym is used for file naming
+    parsed_sym = sym.replace('.', '_')
     old_data = pd.DataFrame()
     print(f'fetching new data for {sym}')
     try:
-        old_data = pd.read_csv(raw_csv_path(sym))
+        old_data = pd.read_csv(raw_csv_path(parsed_sym))
         # last_recorded_timestamp = old_data.iloc[-1]['timestamp'][:10]
         start_date = old_data.iloc[-1]['timestamp'][:10]
         start_date = get_last_available_day(start_date)
@@ -75,9 +77,9 @@ def fetch_new_data(sym,
 
     # save data to csv
     if save:
-        path = os.path.join(DATASET_DIR, sym, 'data')
+        path = os.path.join(DATASET_DIR, parsed_sym, 'data')
         os.makedirs(path, exist_ok=True)
-        path = os.path.join(DATASET_DIR, sym, 'models')
+        path = os.path.join(DATASET_DIR, parsed_sym, 'models')
         os.makedirs(path, exist_ok=True)
         print('saving to csv')
         all_data.to_csv(raw_csv_path(sym), mode=mode, header=header)

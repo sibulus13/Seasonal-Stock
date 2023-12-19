@@ -114,9 +114,16 @@ def plot_last_3_year_data(dataset, sym):
     plt.show()
 
 def create_monthly_dataset(sym, plot = False):
-    dataset_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}.csv'
+    # parsed sym is used for file naming
+    parsed_sym = sym.replace('.', '_')
+    dataset_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}.csv'
     # import dataset
-    dataset = pd.read_csv(dataset_path)
+    try:
+        dataset = pd.read_csv(dataset_path)
+    except Exception as e:
+        print(f'ERROR: {e}')
+        print('no old data found')
+        return
     # remove unnamed:0
     dataset = dataset.drop(['Unnamed: 0'], axis=1)
     cols_to_add = ['week', 'month', 'year', 'month and week', 'quarter', 'max loss', 'max gain']
@@ -125,7 +132,7 @@ def create_monthly_dataset(sym, plot = False):
         dataset[col] = -1
     dataset = calculate_cols(dataset)
     # save dataset
-    save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}_data.csv'
+    save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}_data.csv'
     dataset.to_csv(save_path)
     create_monthly_variables(dataset, sym)
     if plot:
