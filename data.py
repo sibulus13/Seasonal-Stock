@@ -82,7 +82,7 @@ def fetch_new_data(sym,
         path = os.path.join(DATASET_DIR, parsed_sym, 'models')
         os.makedirs(path, exist_ok=True)
         print('saving to csv')
-        all_data.to_csv(raw_csv_path(sym), mode=mode, header=header)
+        all_data.to_csv(raw_csv_path(parsed_sym), mode=mode, header=header)
     print(f'done data fetching for {sym}')
     print('-----------------------------------------')
     return

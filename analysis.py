@@ -45,7 +45,7 @@ def calculate_cols(dataset):
     dataset['month and week'] = dataset['month'].astype(str) + '-' + dataset['week'].astype(str)
     return dataset
 
-def create_monthly_variables(dataset, sym):
+def create_monthly_variables(dataset, sym, save = True, plot = True):
     month_and_weeks = dataset['month and week'].unique()
     # remove '*-5' from month and week
     month_and_weeks = [x for x in month_and_weeks if '-5' not in x]
@@ -79,7 +79,7 @@ def create_monthly_variables(dataset, sym):
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{sym}\data\{sym}_output.csv'
     df.to_csv(save_path)
     
-def plot_last_3_year_data(dataset, sym):
+def plot_last_3_year_data(dataset, sym, plot = False, save = True):
     # get unique month and week values
     month_and_weeks = dataset['month and week'].unique()
     # remove '*-5' from month and week
@@ -87,14 +87,13 @@ def plot_last_3_year_data(dataset, sym):
     
     # plot max loss 
     # plot data for the last 3 unique years
-    for year in dataset['year'].unique()[-3::]:
+    for year in dataset['year'].unique()[-3:-1:]:
         # get data for that year
         year_data = dataset[dataset['year'] == year]
         # get data for those in month_and_weeks
         year_data = year_data[year_data['month and week'].isin(month_and_weeks)]
         # plot
-        plt.scatter(year_data['month and week'], year_data['max loss'], label=f'{year}-loss')
-        plt.scatter(year_data['month and week'], year_data['max gain'], label=f'{year}-gain')
+        plt.scatter(year_data['month and week'], year_data['max loss']+year_data['max gain'], label=f'{year} margin')
     # replace x label with month and weeks and rotate
     plt.xticks(np.arange(len(month_and_weeks)), month_and_weeks)
     plt.grid(axis='x')
@@ -111,9 +110,14 @@ def plot_last_3_year_data(dataset, sym):
     plt.xlabel('Month and Week')
     plt.ylabel('Profit %')
     plt.xticks(rotation=90)
-    plt.show()
+    if plot:
+        plt.show()
+    if save:
+        parsed_sym = sym.replace('.', '_')
+        save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\{parsed_sym}_plot.png'
+        plt.savefig(save_path)
 
-def create_monthly_dataset(sym, plot = False):
+def create_monthly_dataset(sym, plot = False, save = False):
     # parsed sym is used for file naming
     parsed_sym = sym.replace('.', '_')
     dataset_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}.csv'
@@ -135,13 +139,16 @@ def create_monthly_dataset(sym, plot = False):
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}_data.csv'
     dataset.to_csv(save_path)
     create_monthly_variables(dataset, sym)
-    if plot:
-        plot_last_3_year_data(dataset, sym)
+    plot_last_3_year_data(dataset, sym, plot, save)
+    if save:
+        save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}_data.csv'
+        dataset.to_csv(save_path)
 
 
 if __name__ == '__main__':
     sym = 'CVE'
     plot = True
+    save = True
     # format data_path using sym
     
-    create_monthly_dataset(sym, plot=plot)
+    create_monthly_dataset(sym, plot=plot, save=save)

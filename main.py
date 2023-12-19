@@ -5,7 +5,8 @@ from alpaca_trade_api.rest import TimeFrame
 def main():
     pass
 
-
+plot = False
+save = True
 if __name__ == '__main__':
     
     test_syms = ['CVE']
@@ -25,8 +26,9 @@ if __name__ == '__main__':
     syms_consumer_staples = ['ATD.B', 'L', 'WN', 'MRU', 'EMP.A', 'ATD.B', 'L', 'WN', 'MRU', 'EMP.A']
     syms_financials = ['BNS', 'TD', 'BMO', 'RY', 'CM', 'NA', 'BNS', 'TD', 'BMO', 'RY', 'CM', 'NA']
     syms = syms_energy + syms_banks + syms_tech + syms_comm + syms_util + syms_telecom + syms_consumer + syms_industrials + syms_materials + syms_health + syms_real_estate + syms_consumer_staples + syms_financials
-        
+    
+    # syms = test_syms
     for sym in syms:
         start_date = '2000-01-01'
         fetch_new_data(sym, start_date=start_date, tf=TimeFrame.Week)
-        create_monthly_dataset(sym)
+        create_monthly_dataset(sym, plot, save)
