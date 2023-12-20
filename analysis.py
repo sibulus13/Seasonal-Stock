@@ -69,6 +69,10 @@ def create_monthly_variables(dataset, sym, save = True, plot = True):
         df.at[month_and_week, 'max gain'] = max_gain_data.max()
         df.at[month_and_week, 'std loss'] = max_loss_data.std()
         df.at[month_and_week, 'std gain'] = max_gain_data.std()
+        # fill in the month, and week, number of years
+        df.at[month_and_week, 'month'] = month_and_week_data['month'].iloc[0]
+        df.at[month_and_week, 'week'] = month_and_week_data['week'].iloc[0]
+        df.at[month_and_week, 'num years'] = month_and_week_data['year'].nunique()
 
     df['avg gain/loss ratio'] = df['avg gain']+df['avg loss']
     df['min gain/loss ratio'] = df['min gain']+df['max loss']
@@ -85,9 +89,12 @@ def plot_last_3_year_data(dataset, sym, plot = False, save = True):
     # remove '*-5' from month and week
     month_and_weeks = [x for x in month_and_weeks if '-5' not in x]
     
-    # plot max loss 
-    # plot data for the last 3 unique years
-    for year in dataset['year'].unique()[-3:-1:]:
+    # show at least 3 years of data if there are more than 3 years
+    years_to_show = dataset['year'].unique()
+    if len(years_to_show) > 3:
+        years_to_show = years_to_show[-3:]
+    # plot
+    for year in years_to_show:
         # get data for that year
         year_data = dataset[dataset['year'] == year]
         # get data for those in month_and_weeks
@@ -101,12 +108,8 @@ def plot_last_3_year_data(dataset, sym, plot = False, save = True):
     plt.axhline(y=0, color='r', linestyle='-')
     # Only show the first label of every month
     plt.gca().xaxis.set_major_locator(plt.MultipleLocator(4))
-
-    plt.legend()
-    # place legend in bottom left
-    # vertical lines on x axis
     plt.legend(loc='lower left')
-    plt.title('CVE Max Gains and Losses')
+    plt.title(f'{sym} Max Gains and Losses')
     plt.xlabel('Month and Week')
     plt.ylabel('Profit %')
     plt.xticks(rotation=90)
@@ -149,6 +152,5 @@ if __name__ == '__main__':
     sym = 'CVE'
     plot = True
     save = True
-    # format data_path using sym
-    
+
     create_monthly_dataset(sym, plot=plot, save=save)
