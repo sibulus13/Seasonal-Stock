@@ -28,7 +28,7 @@ def get_all_csv_data():
     # return the dataframe
     return df
 
-def create_cumulative_csv(df):
+def create_cumulative_csv(data):
     # Create a new dataframe with the unique "month and weeks" as the columns and "top performer" as row
     df = pd.DataFrame(columns=["month and week"])
     df = df.set_index("month and week")
@@ -66,10 +66,10 @@ def create_cumulative_csv(df):
     # save the dataframe to a csv file
     df.to_csv(r"D:\repo\Stock\Seasonal-Stock\dataset\seasonal_top_performer.csv")
 
-def main():
+def create_comprehensive_seasonal_csv():
     # get all the csv data
     data = get_all_csv_data()
     create_cumulative_csv(data)
     
 if __name__ == "__main__":
-    main()
+    create_comprehensive_seasonal_csv()
