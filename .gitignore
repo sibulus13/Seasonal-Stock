@@ -2,6 +2,7 @@
 *.csv
 *.pyc
 *.png
+constants.py
 
 # ignore any files that includes "CVE"
 !*CVE*
