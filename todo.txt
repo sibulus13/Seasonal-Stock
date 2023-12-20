@@ -1,1 +1,2 @@
-graph the plots in output files
+- graph the plots in output files
+- why overlay when you can set it as the background image daily?
