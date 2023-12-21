@@ -3,6 +3,7 @@
 *.pyc
 *.png
 constants.py
+**target**
 
 # ignore any files that includes "CVE"
 !*CVE*
