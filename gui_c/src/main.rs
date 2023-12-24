@@ -36,14 +36,16 @@ fn main() {
     let date = &get_today_date();
     let entry = find_entry_by_date(date);
     println!("{:?}", entry);
-
 }
 
-fn find_entry_by_date(date: &DateFormat) -> Result<[Option<SeasonalTopPerformer>; 1], Box<dyn Error>> {
+fn find_entry_by_date(
+    date: &DateFormat,
+) -> Result<[Option<SeasonalTopPerformer>; 1], Box<dyn Error>> {
     let path = Path::new("D:/repo/Stock/Seasonal-Stock/dataset/seasonal_top_performer.csv");
     let mut rdr = Reader::from_path(path)?;
     for result in rdr.deserialize() {
         let entry: SeasonalTopPerformer = result?;
+        // * I'm using the below block to compare because idk a better way, I would assume setting import directly to i32 would be better?
         // convert date.month to string with 1 sig fig
         let month = f64::from(date.month);
         let month = format!("{:.1}", month);
