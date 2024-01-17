@@ -120,7 +120,7 @@ def plot_last_3_year_data(dataset, sym, plot = False, save = True):
         save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\{parsed_sym}_plot.png'
         plt.savefig(save_path)
 
-def create_monthly_dataset(sym, plot = False, save = False):
+def create_monthly_dataset(sym, plot = False, save = False, visualize = False):
     # parsed sym is used for file naming
     parsed_sym = sym.replace('.', '_')
     dataset_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}.csv'
@@ -142,15 +142,45 @@ def create_monthly_dataset(sym, plot = False, save = False):
     save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}_data.csv'
     dataset.to_csv(save_path)
     create_monthly_variables(dataset, sym)
-    plot_last_3_year_data(dataset, sym, plot, save)
+    if plot:
+        plot_last_3_year_data(dataset, sym, plot, save)
     if save:
         save_path = rf'D:\repo\Stock\Seasonal-Stock\dataset\{parsed_sym}\data\{parsed_sym}_data.csv'
         dataset.to_csv(save_path)
+        
+    # visualize = True
+    if visualize:
+        # print(dataset)
+        visualize_this_month(sym, dataset)
 
+
+def visualize_this_month(sym, dataset):
+    # get current month and week
+    now = datetime.now()
+    current_month = now.month
+    current_week = week_of_month(now)
+    print(f'current month: {current_month}', f'current week: {current_week}')
+    # get data for this month and week
+    month_and_week = f'{current_month}-{current_week}'
+    month_and_week_data = dataset[dataset['month and week'] == month_and_week]
+    # plot data
+    plt.scatter(month_and_week_data['year'], month_and_week_data['max loss'], label=f'{month_and_week} loss')
+    plt.scatter(month_and_week_data['year'], month_and_week_data['max gain'], label=f'{month_and_week} gain')
+    plt.scatter(month_and_week_data['year'], month_and_week_data['max loss']+month_and_week_data['max gain'], label=f'{month_and_week} margin')
+    plt.grid(axis='x')
+    # horizontal line on 0
+    plt.axhline(y=0, color='r', linestyle='-')
+    plt.legend(loc='lower left')
+    plt.title(f'{sym} Max Gains and Losses')
+    plt.xlabel('Date')
+    plt.ylabel('Profit %')
+    plt.xticks(rotation=90)
+    plt.show()
 
 if __name__ == '__main__':
     sym = 'CVE'
-    plot = True
+    plot = False
     save = True
+    visualize = True
 
-    create_monthly_dataset(sym, plot=plot, save=save)
+    create_monthly_dataset(sym, plot=plot, save=save, visualize=visualize)

@@ -65,11 +65,28 @@ def create_cumulative_csv(data):
     # open a csv 
     # save the dataframe to a csv file
     df.to_csv(r"D:\repo\Stock\Seasonal-Stock\dataset\seasonal_top_performer.csv")
+    return df
 
 def create_comprehensive_seasonal_csv():
     # get all the csv data
     data = get_all_csv_data()
-    create_cumulative_csv(data)
+    df = create_cumulative_csv(data)
     
+def get_todays_month_and_week():
+    today = pd.to_datetime("today")
+    month = today.month
+    week = today.week
+    return month, week
+    
+def get_current_month_top_performers():
+    data = get_all_csv_data()
+    current_month_and_week = "-".join([str(i) for i in get_todays_month_and_week()])
+    current_month_and_week_data = data[data["month and week"] == current_month_and_week]
+    top_performers = current_month_and_week_data.sort_values(by="avg gain/loss ratio", ascending=False).head(3)[["name", "avg gain/loss ratio"]].values.tolist(
+    )[0:3]
+    return top_performers
+
 if __name__ == "__main__":
-    create_comprehensive_seasonal_csv()
+    # create_comprehensive_seasonal_csv()
+    a = get_current_month_top_performers()
+    print(a)
