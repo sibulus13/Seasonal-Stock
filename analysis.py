@@ -29,6 +29,9 @@ def max_gain(entry1, entry2):
     # entry1 and entry2 are rows of the dataset
     return (entry2['high'] - entry1['low'])/entry1['close']*100
 
+def open_close_ratio(entry1, entry2):
+    return (entry2['open'] - entry1['close'])/entry1['close']*100
+
 def calculate_cols(dataset):
     for index, row in dataset.iterrows():
         # calculate week of month
@@ -40,6 +43,7 @@ def calculate_cols(dataset):
         if index < len(dataset) - 1:
             dataset.at[index, 'max loss'] = max_loss(row, dataset.iloc[index+1])
             dataset.at[index, 'max gain'] = max_gain(row, dataset.iloc[index+1])
+            dataset.at[index, 'open close ratio'] = open_close_ratio(row)
     # normalize week of month by subtracting the min week of month for that month from every entry
     dataset['week'] = dataset['week'] - dataset.groupby(['year', 'month'])['week'].transform('min') + 1
     dataset['month and week'] = dataset['month'].astype(str) + '-' + dataset['week'].astype(str)

@@ -7,9 +7,10 @@ plot = False
 save = True
 
 if __name__ == '__main__':
-    syms
+    create=False
     for sym in syms:
         start_date = '2000-01-01'
         fetch_new_data(sym, start_date=start_date, tf=TimeFrame.Week)
         create_monthly_dataset(sym, plot, save)
-    create_comprehensive_seasonal_csv()
+    if create:
+        create_comprehensive_seasonal_csv()
